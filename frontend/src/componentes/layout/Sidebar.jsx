@@ -56,7 +56,7 @@ export default function Sidebar({ abierto, onCerrar }) {
         <div
           className={`flex h-14 shrink-0 items-center border-b border-white/10 ${abierto ? 'px-4' : 'justify-center'}`}
         >
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-600">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-violet-600">
             <span className="text-sm font-bold text-white">$</span>
           </div>
           {abierto && (
@@ -73,8 +73,8 @@ export default function Sidebar({ abierto, onCerrar }) {
               className={({ isActive }) =>
                 `flex items-center rounded-lg text-sm font-medium transition-colors ${abierto ? 'gap-3 px-3 py-2' : 'justify-center p-2.5'} ${
                   isActive
-                    ? 'bg-emerald-600 text-white'
-                    : 'text-emerald-400 hover:bg-emerald-600/15 hover:text-emerald-300'
+                    ? 'bg-violet-600 text-white'
+                    : 'text-violet-400 hover:bg-violet-600/15 hover:text-violet-300'
                 }`
               }
             >

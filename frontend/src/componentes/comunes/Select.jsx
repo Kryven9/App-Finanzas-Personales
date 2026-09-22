@@ -12,7 +12,7 @@ const Select = forwardRef(
         <select
           id={id}
           ref={ref}
-          className={`rounded-lg border bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:ring-2 focus:ring-emerald-500 
+          className={`rounded-lg border bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:ring-2 focus:ring-violet-500 
                         ${error ? 'border-red-400' : 'border-slate-300'} ${className}`}
           {...resto}
         >

@@ -1,8 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAutenticacionStore } from '../estados/autenticacion.store';
+import LayoutPanel from '../componentes/layout/LayoutPanel';
 import Login from '../paginas/IniciarSesion/Login';
 import Registro from '../paginas/Registro/Registro';
 import Dashboard from '../paginas/Dashboard/Dashboard';
+import Perfil from '../paginas/Perfil/Perfil';
 
 function RutaProtegida({ children }) {
   const token = useAutenticacionStore((estado) => estado.token);
@@ -15,14 +17,20 @@ export default function RutasApp() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
+
         <Route
-          path="/dashboard"
+          path="/"
           element={
             <RutaProtegida>
-              <Dashboard />
+              <LayoutPanel />
             </RutaProtegida>
           }
-        />
+        >
+          <Route index element={<Navigate to="/dashboard" replace />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="perfil" element={<Perfil />} />
+        </Route>
+
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>

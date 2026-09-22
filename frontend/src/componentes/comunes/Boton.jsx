@@ -1,5 +1,5 @@
 const clasesVariante = {
-  primario: 'bg-emerald-600 text-white hover:bg-emerald-700 disabled:bg-emerald-300',
+  primario: 'bg-violet-600 text-white hover:bg-violet-700 disabled:bg-violet-300',
   secundario: 'bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:text-slate-400',
   peligro: 'bg-red-600 text-white hover:bg-red-700 disabled:bg-red-300',
   fantasma: 'bg-transparent text-slate-600 hover:bg-slate-100 disabled:text-slate-300',

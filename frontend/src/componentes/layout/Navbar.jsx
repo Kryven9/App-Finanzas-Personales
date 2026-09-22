@@ -53,7 +53,7 @@ export default function Navbar({ onToggleSidebar }) {
           {menuAbierto && (
             <div className="absolute right-0 top-12 z-50 w-56 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
               <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-700 text-white">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-violet-700 text-white">
                   <UserRound className="h-4 w-4" />
                 </div>
                 <div className="min-w-0">
