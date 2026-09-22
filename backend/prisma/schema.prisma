@@ -1,0 +1,174 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Usuario {
+  id                 String   @id @default(uuid())
+  nombre             String
+  correo             String   @unique
+  contrasenaHash     String   @map("contrasena_hash")
+  fechaCreacion      DateTime @default(now()) @map("fecha_creacion")
+  fechaActualizacion DateTime @updatedAt @map("fecha_actualizacion")
+
+  cuentas                  Cuenta[]
+  categorias               Categoria[]
+  transacciones            Transaccion[]
+  transaccionesRecurrentes TransaccionRecurrente[]
+  presupuestos             Presupuesto[]
+  metasAhorro              MetaAhorro[]
+
+  @@map("usuarios")
+}
+
+enum TipoCuenta {
+  EFECTIVO
+  BANCO
+  TARJETA_CREDITO
+  OTRO
+}
+
+model Cuenta {
+  id                 String     @id @default(uuid())
+  idUsuario          String     @map("id_usuario")
+  nombre             String
+  tipo               TipoCuenta
+  saldoInicial       Decimal    @default(0) @map("saldo_inicial")
+  fechaCreacion      DateTime   @default(now()) @map("fecha_creacion")
+  fechaActualizacion DateTime   @updatedAt @map("fecha_actualizacion")
+
+  usuario                  Usuario                 @relation(fields: [idUsuario], references: [id])
+  transacciones            Transaccion[]
+  transaccionesRecurrentes TransaccionRecurrente[]
+
+  @@map("cuentas")
+}
+
+enum TipoCategoria {
+  INGRESO
+  GASTO
+}
+
+model Categoria {
+  id            String        @id @default(uuid())
+  idUsuario     String?       @map("id_usuario")
+  nombre        String
+  tipo          TipoCategoria
+  esPredefinida Boolean       @default(false) @map("es_predefinida")
+  fechaCreacion DateTime      @default(now()) @map("fecha_creacion")
+
+  usuario                  Usuario?                @relation(fields: [idUsuario], references: [id])
+  transacciones            Transaccion[]
+  transaccionesRecurrentes TransaccionRecurrente[]
+  presupuesto              Presupuesto[]
+
+  @@map("categorias")
+}
+
+enum TipoTransaccion {
+  INGRESO
+  GASTO
+}
+
+enum FrecuenciaRecurrencia {
+  SEMANAL
+  MENSUAL
+  ANUAL
+}
+
+model TransaccionRecurrente {
+  id                     String                @id @default(uuid())
+  idUsuario              String                @map("id_usuario")
+  idCuenta               String                @map("id_cuenta")
+  idCategoria            String                @map("id_categoria")
+  tipo                   TipoTransaccion
+  monto                  Decimal
+  descripcion            String?
+  frecuencia             FrecuenciaRecurrencia
+  fechaInicio            DateTime              @map("fecha_inicio")
+  proximaFechaGeneracion DateTime              @map("proxima_fecha_generacion")
+  activa                 Boolean               @default(true)
+  fechaCreacion          DateTime              @default(now()) @map("fecha_creacion")
+  fechaActualizacion     DateTime              @updatedAt @map("fecha_actualizacion")
+
+  usuario       Usuario       @relation(fields: [idUsuario], references: [id])
+  cuenta        Cuenta        @relation(fields: [idCuenta], references: [id], onDelete: Restrict)
+  categoria     Categoria     @relation(fields: [idCategoria], references: [id], onDelete: Restrict)
+  transacciones Transaccion[]
+
+  @@index([idUsuario, activa])
+  @@map("transacciones_recurrentes")
+}
+
+model Transaccion {
+  id                      String          @id @default(uuid())
+  idUsuario               String          @map("id_usuario")
+  idCuenta                String          @map("id_cuenta")
+  idCategoria             String          @map("id_categoria")
+  idTransaccionRecurrente String?         @map("id_transaccion_recurrente")
+  tipo                    TipoTransaccion
+  monto                   Decimal
+  descripcion             String?
+  fecha                   DateTime
+  fechaCreacion           DateTime        @default(now()) @map("fecha_creacion")
+  fechaActualizacion      DateTime        @updatedAt @map("fecha_actualizacion")
+
+  usuario               Usuario                @relation(fields: [idUsuario], references: [id])
+  cuenta                Cuenta                 @relation(fields: [idCuenta], references: [id], onDelete: Restrict)
+  categoria             Categoria              @relation(fields: [idCategoria], references: [id], onDelete: Restrict)
+  transaccionRecurrente TransaccionRecurrente? @relation(fields: [idTransaccionRecurrente], references: [id], onDelete: SetNull)
+
+  @@index([idUsuario, fecha])
+  @@index([idCuenta])
+  @@index([idCategoria])
+  @@index([idTransaccionRecurrente])
+  @@unique([idTransaccionRecurrente, fecha])
+  @@map("transacciones")
+}
+
+model Presupuesto {
+  id            String   @id @default(uuid())
+  idUsuario     String   @map("id_usuario")
+  idCategoria   String   @map("id_categoria")
+  montoLimite   Decimal  @map("monto_limite")
+  mes           Int
+  anio          Int
+  fechaCreacion DateTime @default(now()) @map("fecha_creacion")
+
+  usuario   Usuario   @relation(fields: [idUsuario], references: [id])
+  categoria Categoria @relation(fields: [idCategoria], references: [id], onDelete: Restrict)
+
+  @@unique([idUsuario, idCategoria, mes, anio])
+  @@map("presupuestos")
+}
+
+model MetaAhorro {
+  id            String   @id @default(uuid())
+  idUsuario     String   @map("id_usuario")
+  nombre        String
+  montoObjetivo Decimal  @map("monto_objetivo")
+  montoActual   Decimal  @default(0) @map("monto_actual")
+  fechaObjetivo DateTime @map("fecha_objetivo")
+  fechaCreacion DateTime @default(now()) @map("fecha_creacion")
+
+  usuario Usuario      @relation(fields: [idUsuario], references: [id])
+  aportes AporteMeta[]
+
+  @@map("metas_ahorro")
+}
+
+model AporteMeta {
+  id            String   @id @default(uuid())
+  idMeta        String   @map("id_meta")
+  monto         Decimal
+  fecha         DateTime
+  fechaCreacion DateTime @default(now()) @map("fecha_creacion")
+
+  meta MetaAhorro @relation(fields: [idMeta], references: [id], onDelete: Cascade)
+
+  @@map("aportes_meta")
+}
