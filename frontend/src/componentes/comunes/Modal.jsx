@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { X } from 'lucide-react';
 
 export default function Modal({ abierto, onCerrar, titulo, children }) {
   useEffect(() => {
@@ -22,10 +23,10 @@ export default function Modal({ abierto, onCerrar, titulo, children }) {
           <h2 className="text-lg font-semibold text-slate-900">{titulo}</h2>
           <button
             onClick={onCerrar}
-            className="text-slate-400 hover:text-slate-600"
+            className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
             aria-label="Cerrar"
           >
-            X
+            <X className="h-4 w-4" />
           </button>
         </div>
         {children}

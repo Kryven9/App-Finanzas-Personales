@@ -2,17 +2,15 @@ import { useState } from 'react';
 import Boton from '../../../componentes/comunes/Boton';
 import Input from '../../../componentes/comunes/Input';
 import Select from '../../../componentes/comunes/Select';
-import { TIPOS_CUENTA } from '../../../compartido/tipos-cuenta';
-import { esquemaCuenta } from '../../../validaciones/cuenta.validacion';
+import { TIPOS_CATEGORIA } from '../../../compartido/tipos-categoria';
+import { esquemaCategoria } from '../../../validaciones/categoria.validacion';
 import { obtenerErroresPorCampo } from '../../../compartido/errores-zod';
 
-const valoresIniciales = { nombre: '', tipo: '', saldoInicial: '' };
+const valoresIniciales = { nombre: '', tipo: '' };
 
-export default function FormularioCuenta({ cuenta, cargando, onGuardar, onCancelar }) {
+export default function FormularioCategoria({ categoria, cargando, onGuardar, onCancelar }) {
   const [valores, setValores] = useState(
-    cuenta
-      ? { nombre: cuenta.nombre, tipo: cuenta.tipo, saldoInicial: String(cuenta.saldoInicial) }
-      : valoresIniciales,
+    categoria ? { nombre: categoria.nombre, tipo: categoria.tipo } : valoresIniciales,
   );
   const [errores, setErrores] = useState({});
 
@@ -24,14 +22,7 @@ export default function FormularioCuenta({ cuenta, cargando, onGuardar, onCancel
   async function manejarEnvio(evento) {
     evento.preventDefault();
 
-    // el saldo inicial viaja como texto en el input -> se convierte antes de validar
-    const datos = {
-      nombre: valores.nombre,
-      tipo: valores.tipo,
-      saldoInicial: valores.saldoInicial === '' ? NaN : Number(valores.saldoInicial),
-    };
-
-    const validacion = esquemaCuenta.safeParse(datos);
+    const validacion = esquemaCategoria.safeParse(valores);
     if (!validacion.success) {
       setErrores(obtenerErroresPorCampo(validacion.error));
       return;
@@ -47,7 +38,7 @@ export default function FormularioCuenta({ cuenta, cargando, onGuardar, onCancel
         etiqueta="Nombre"
         id="nombre"
         name="nombre"
-        placeholder="Ej: Banco principal"
+        placeholder="Ej: Viaje"
         maxLength={60}
         value={valores.nombre}
         onChange={manejarCambio}
@@ -55,27 +46,14 @@ export default function FormularioCuenta({ cuenta, cargando, onGuardar, onCancel
       />
 
       <Select
-        etiqueta="Tipo de cuenta"
+        etiqueta="Tipo de categoria"
         id="tipo"
         name="tipo"
         placeholder="Selecciona un tipo"
-        opciones={TIPOS_CUENTA}
+        opciones={TIPOS_CATEGORIA}
         value={valores.tipo}
         onChange={manejarCambio}
         error={errores.tipo}
-      />
-
-      <Input
-        etiqueta="Saldo inicial"
-        id="saldoInicial"
-        name="saldoInicial"
-        type="number"
-        step="0.01"
-        min="0"
-        placeholder="0.00"
-        value={valores.saldoInicial}
-        onChange={manejarCambio}
-        error={errores.saldoInicial}
       />
 
       <div className="flex justify-end gap-2 pt-2">
