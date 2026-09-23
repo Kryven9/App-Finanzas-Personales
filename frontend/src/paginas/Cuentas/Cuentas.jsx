@@ -3,10 +3,8 @@ import { Plus, Wallet } from 'lucide-react';
 import Boton from '../../componentes/comunes/Boton';
 import Tarjeta from '../../componentes/comunes/Tarjeta';
 import Modal from '../../componentes/comunes/Modal';
-import Cargando from '../../componentes/comunes/Cargando';
-import EstadoVacio from '../../componentes/comunes/EstadoVacio';
 import DialogoConfirmacion from '../../componentes/comunes/DialogoConfirmacion';
-import TarjetaCuenta from './componentes/TarjetaCuenta';
+import ListadoCuentas from './componentes/ListadoCuentas';
 import FormularioCuenta from './componentes/FormularioCuenta';
 import { useCuentas } from '../../hooks/useCuentas';
 import { formatearMoneda } from '../../compartido/formato';
@@ -68,31 +66,13 @@ export default function Cuentas() {
         </div>
       </Tarjeta>
 
-      {cargando ? (
-        <Cargando />
-      ) : cuentas.length === 0 ? (
-        <EstadoVacio
-          titulo="Aun no tienes cuentas"
-          descripcion="Crea tu primera cuenta para empezar a registrar transacciones"
-          accion={
-            <Boton onClick={abrirModalNueva}>
-              <Plus className="h-4 w-4" />
-              Crear cuenta
-            </Boton>
-          }
-        />
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {cuentas.map((cuenta) => (
-            <TarjetaCuenta
-              key={cuenta.id}
-              cuenta={cuenta}
-              onEditar={() => abrirModalEdicion(cuenta)}
-              onEliminar={() => setCuentaAEliminar(cuenta)}
-            />
-          ))}
-        </div>
-      )}
+      <ListadoCuentas
+        cargando={cargando}
+        cuentas={cuentas}
+        onNueva={abrirModalNueva}
+        onEditar={abrirModalEdicion}
+        onEliminar={setCuentaAEliminar}
+      />
 
       <Modal
         abierto={modalAbierto}

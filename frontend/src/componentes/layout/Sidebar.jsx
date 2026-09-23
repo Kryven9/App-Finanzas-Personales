@@ -1,5 +1,13 @@
 import { NavLink } from 'react-router-dom';
-import { BarChart3, CreditCard, LayoutDashboard, PiggyBank, Receipt, Target } from 'lucide-react';
+import {
+  BarChart3,
+  CreditCard,
+  LayoutDashboard,
+  PiggyBank,
+  Receipt,
+  Shapes,
+  Target,
+} from 'lucide-react';
 
 const enlaces = [
   {
@@ -16,6 +24,11 @@ const enlaces = [
     ruta: '/transacciones',
     etiqueta: 'Transacciones',
     icono: <Receipt className="h-4 w-4 shrink-0" />,
+  },
+  {
+    ruta: '/categorias',
+    etiqueta: 'Categorias',
+    icono: <Shapes className="h-4 w-4 shrink-0" />,
   },
   {
     ruta: '/presupuestos',
