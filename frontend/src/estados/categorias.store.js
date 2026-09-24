@@ -1,66 +1,56 @@
-import { useCallback, useEffect, useState } from 'react';
+import { create } from 'zustand';
 import { categoriaServicio } from '../servicios/categoria.servicio';
 import { obtenerMensajeError } from '../compartido/mensajes-error';
 import { notificarExito, notificarError } from '../compartido/notificaciones';
 
-// hook que gestiona el listado de categorias (predefinidas + propias) y las operaciones CRUD
-export function useCategorias() {
-  const [categorias, setCategorias] = useState([]);
-  const [cargando, setCargando] = useState(true);
+// store global de categorias (predefinidas + propias),
+export const useCategoriasStore = create((set, get) => ({
+  categorias: [],
+  cargando: true,
 
-  // el listado se recarga despues de cada operacion CRUD
-  const cargar = useCallback(() => {
-    categoriaServicio
-      .listar()
-      .then((datos) => {
-        setCategorias(datos);
-      })
-      .catch((error) => {
-        notificarError(obtenerMensajeError(error, 'No se pudieron cargar las categorias'));
-      })
-      .finally(() => {
-        setCargando(false);
-      });
-  }, []);
+  cargar: async () => {
+    try {
+      const datos = await categoriaServicio.listar();
+      set({ categorias: datos });
+    } catch (error) {
+      notificarError(obtenerMensajeError(error, 'No se pudieron cargar las categorias'));
+    } finally {
+      set({ cargando: false });
+    }
+  },
 
-  useEffect(() => {
-    cargar();
-  }, [cargar]);
-
-  async function crear(datos) {
+  crear: async (datos) => {
     try {
       await categoriaServicio.crear(datos);
       notificarExito('Categoria creada');
-      cargar();
+      await get().cargar();
       return true;
     } catch (error) {
       notificarError(obtenerMensajeError(error, 'No se pudo crear la categoria'));
       return false;
     }
-  }
+  },
 
-  async function actualizar(id, datos) {
+  actualizar: async (id, datos) => {
     try {
       await categoriaServicio.actualizar(id, datos);
       notificarExito('Categoria actualizada');
-      cargar();
+      await get().cargar();
       return true;
     } catch (error) {
       notificarError(obtenerMensajeError(error, 'No se pudo actualizar la categoria'));
       return false;
     }
-  }
+  },
 
-  async function eliminar(id) {
+  eliminar: async (id) => {
     try {
       await categoriaServicio.eliminar(id);
       notificarExito('Categoria eliminada');
-      cargar();
+      await get().cargar();
     } catch (error) {
       // el backend bloquea el borrado de predefinidas o con usos y lo informa
       notificarError(obtenerMensajeError(error, 'No se pudo eliminar la categoria'));
     }
-  }
-
-  return { categorias, cargando, crear, actualizar, eliminar };
-}
+  },
+}));

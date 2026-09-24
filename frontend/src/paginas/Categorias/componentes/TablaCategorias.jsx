@@ -1,10 +1,5 @@
 import { Pencil, Trash2 } from 'lucide-react';
-import { obtenerTipoCategoria } from '../../../compartido/tipos-categoria';
-
-const clasesBadgeTipo = {
-  INGRESO: 'bg-violet-100 text-violet-700',
-  GASTO: 'bg-red-100 text-red-600',
-};
+import { obtenerTipoMovimiento } from '../../../compartido/tipos-movimiento';
 
 export default function TablaCategorias({ categorias, onEditar, onEliminar }) {
   return (
@@ -19,7 +14,7 @@ export default function TablaCategorias({ categorias, onEditar, onEliminar }) {
         </thead>
         <tbody>
           {categorias.map((categoria) => {
-            const tipo = obtenerTipoCategoria(categoria.tipo);
+            const tipo = obtenerTipoMovimiento(categoria.tipo);
             const Icono = tipo.icono;
 
             return (
@@ -37,7 +32,7 @@ export default function TablaCategorias({ categorias, onEditar, onEliminar }) {
                 </td>
                 <td className="px-4 py-3 text-center">
                   <span
-                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${clasesBadgeTipo[categoria.tipo]}`}
+                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${tipo.clases}`}
                   >
                     <Icono className="h-3.5 w-3.5" />
                     {tipo.etiqueta}
