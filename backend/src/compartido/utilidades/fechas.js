@@ -13,3 +13,11 @@ export function construirRango({ inicio, fin } = {}) {
     fin: fin && new Date(`${fin}T23:59:59.999Z`),
   };
 }
+
+// convierte el periodo (mes 1-12 / año) al rango de fechas del mes completo
+export function construirPeriodo(mes, anio) {
+  return {
+    inicio: new Date(Date.UTC(anio, mes - 1, 1)),
+    fin: new Date(Date.UTC(anio, mes, 0, 23, 59, 59, 999)),
+  };
+}
