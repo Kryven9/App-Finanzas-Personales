@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Plus, Shapes } from 'lucide-react';
 import Boton from '../../componentes/comunes/Boton';
 import Tarjeta from '../../componentes/comunes/Tarjeta';
@@ -6,16 +6,20 @@ import Modal from '../../componentes/comunes/Modal';
 import DialogoConfirmacion from '../../componentes/comunes/DialogoConfirmacion';
 import ListadoCategorias from './componentes/ListadoCategorias';
 import FormularioCategoria from './componentes/FormularioCategoria';
-import { useCategorias } from '../../hooks/useCategorias';
-import { FILTROS_CATEGORIA } from '../../compartido/tipos-categoria';
+import { useCategoriasStore } from '../../estados/categorias.store';
+import { FILTROS_CATEGORIA } from '../../compartido/tipos-movimiento';
 
 export default function Categorias() {
-  const { categorias, cargando, crear, actualizar, eliminar } = useCategorias();
+  const { categorias, cargando, crear, actualizar, eliminar, cargar } = useCategoriasStore();
   const [filtroTipo, setFiltroTipo] = useState('TODAS');
   const [modalAbierto, setModalAbierto] = useState(false);
   const [categoriaEditando, setCategoriaEditando] = useState(null);
   const [categoriaAEliminar, setCategoriaAEliminar] = useState(null);
   const [procesando, setProcesando] = useState(false);
+
+  useEffect(() => {
+    cargar();
+  }, [cargar]);
 
   const categoriasFiltradas =
     filtroTipo === 'TODAS'

@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { TIPOS_CATEGORIA } from '../compartido/tipos-categoria';
+import { TIPOS_MOVIMIENTO } from '../compartido/tipos-movimiento';
 
-const valoresTipoCategoria = TIPOS_CATEGORIA.map((tipo) => tipo.valor);
+const valoresTipoMovimiento = TIPOS_MOVIMIENTO.map((tipo) => tipo.valor);
 
 export const esquemaCategoria = z.object({
   nombre: z
@@ -9,5 +9,5 @@ export const esquemaCategoria = z.object({
     .trim()
     .min(3, 'El nombre debe tener al menos 3 caracteres')
     .max(60, 'El nombre no puede exceder 60 caracteres'),
-  tipo: z.enum(valoresTipoCategoria, 'Selecciona un tipo de categoria valido'),
+  tipo: z.enum(valoresTipoMovimiento, 'Selecciona un tipo de categoria valido'),
 });

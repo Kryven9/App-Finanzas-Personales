@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Plus, Wallet } from 'lucide-react';
 import Boton from '../../componentes/comunes/Boton';
 import Tarjeta from '../../componentes/comunes/Tarjeta';
@@ -6,15 +6,20 @@ import Modal from '../../componentes/comunes/Modal';
 import DialogoConfirmacion from '../../componentes/comunes/DialogoConfirmacion';
 import ListadoCuentas from './componentes/ListadoCuentas';
 import FormularioCuenta from './componentes/FormularioCuenta';
-import { useCuentas } from '../../hooks/useCuentas';
+import { useCuentasStore } from '../../estados/cuentas.store';
 import { formatearMoneda } from '../../compartido/formato';
 
 export default function Cuentas() {
-  const { cuentas, patrimonioNeto, cargando, crear, actualizar, eliminar } = useCuentas();
+  const { cuentas, patrimonioNeto, cargando, crear, actualizar, eliminar, cargar } =
+    useCuentasStore();
   const [modalAbierto, setModalAbierto] = useState(false);
   const [cuentaEditando, setCuentaEditando] = useState(null);
   const [cuentaAEliminar, setCuentaAEliminar] = useState(null);
   const [procesando, setProcesando] = useState(false);
+
+  useEffect(() => {
+    cargar();
+  }, [cargar]);
 
   function abrirModalNueva() {
     setCuentaEditando(null);

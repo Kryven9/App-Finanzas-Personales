@@ -6,6 +6,7 @@ import Registro from '../paginas/Registro/Registro';
 import Dashboard from '../paginas/Dashboard/Dashboard';
 import Cuentas from '../paginas/Cuentas/Cuentas';
 import Categorias from '../paginas/Categorias/Categorias';
+import Transacciones from '../paginas/Transacciones/Transacciones';
 import Perfil from '../paginas/Perfil/Perfil';
 
 function RutaProtegida({ children }) {
@@ -32,6 +33,7 @@ export default function RutasApp() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="cuentas" element={<Cuentas />} />
           <Route path="categorias" element={<Categorias />} />
+          <Route path="transacciones" element={<Transacciones />} />
           <Route path="perfil" element={<Perfil />} />
         </Route>
 

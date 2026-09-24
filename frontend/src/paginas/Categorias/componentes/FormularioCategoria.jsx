@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Boton from '../../../componentes/comunes/Boton';
 import Input from '../../../componentes/comunes/Input';
 import Select from '../../../componentes/comunes/Select';
-import { TIPOS_CATEGORIA } from '../../../compartido/tipos-categoria';
+import { TIPOS_MOVIMIENTO } from '../../../compartido/tipos-movimiento';
 import { esquemaCategoria } from '../../../validaciones/categoria.validacion';
 import { obtenerErroresPorCampo } from '../../../compartido/errores-zod';
 
@@ -50,7 +50,7 @@ export default function FormularioCategoria({ categoria, cargando, onGuardar, on
         id="tipo"
         name="tipo"
         placeholder="Selecciona un tipo"
-        opciones={TIPOS_CATEGORIA}
+        opciones={TIPOS_MOVIMIENTO}
         value={valores.tipo}
         onChange={manejarCambio}
         error={errores.tipo}
