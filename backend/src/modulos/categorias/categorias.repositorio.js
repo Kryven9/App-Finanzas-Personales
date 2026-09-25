@@ -15,6 +15,20 @@ export const categoriasRepositorio = {
     return categoria;
   },
 
+  // categorias propias o predefinidas pueden asignarse a transacciones o presupuestos;
+  // las de sistema quedan excluidas
+  async buscarCategoria(idUsuario, id) {
+    const categoria = await clientePrisma.categoria.findFirst({
+      where: { id, esSistema: false, OR: [{ esPredefinida: true }, { idUsuario }] },
+    });
+    return categoria;
+  },
+
+  async buscarCategoriaSistema() {
+    const categoria = await clientePrisma.categoria.findFirst({ where: { esSistema: true } });
+    return categoria;
+  },
+
   async crear(idUsuario, datos) {
     const categoria = await clientePrisma.categoria.create({
       data: { ...datos, esPredefinida: false, idUsuario },

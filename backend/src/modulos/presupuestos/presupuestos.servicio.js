@@ -1,4 +1,5 @@
 import { ErrorApi } from '../../compartido/middlewares/error.middleware.js';
+import { categoriasRepositorio } from '../categorias/categorias.repositorio.js';
 import { presupuestosRepositorio } from './presupuestos.repositorio.js';
 
 // convierte el monto Decimal a numero y aplana los datos de la categoria
@@ -14,7 +15,7 @@ function limpiarPresupuesto(presupuesto) {
 
 // solo las categorias de tipo gasto se pueden presupuestar -> el gasto real no aplica a ingresos
 async function validarCategoria(idUsuario, idCategoria) {
-  const categoria = await presupuestosRepositorio.buscarCategoria(idUsuario, idCategoria);
+  const categoria = await categoriasRepositorio.buscarCategoria(idUsuario, idCategoria);
 
   if (!categoria) {
     throw new ErrorApi('Categoria no encontrada', 404);

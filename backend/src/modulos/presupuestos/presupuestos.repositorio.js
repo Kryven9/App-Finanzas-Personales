@@ -21,14 +21,6 @@ export const presupuestosRepositorio = {
     return presupuesto;
   },
 
-  // categorias propias o predefinidas pueden presupuestarse
-  async buscarCategoria(idUsuario, id) {
-    const categoria = await clientePrisma.categoria.findFirst({
-      where: { id, OR: [{ esPredefinida: true }, { idUsuario }] },
-    });
-    return categoria;
-  },
-
   async buscarDuplicado(idUsuario, idCategoria, mes, anio) {
     const presupuesto = await clientePrisma.presupuesto.findFirst({
       where: { idUsuario, idCategoria, mes, anio },

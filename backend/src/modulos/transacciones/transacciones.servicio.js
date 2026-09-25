@@ -1,4 +1,6 @@
 import { ErrorApi } from '../../compartido/middlewares/error.middleware.js';
+import { categoriasRepositorio } from '../categorias/categorias.repositorio.js';
+import { cuentasRepositorio } from '../cuentas/cuentas.repositorio.js';
 import { transaccionesRepositorio } from './transacciones.repositorio.js';
 
 const LIMITE_PAGINA = 10;
@@ -28,13 +30,13 @@ function validarTransaccionManual(transaccion) {
 
 // validar que la cuenta y la categoria existan y que el tipo coincida con la categoria
 async function validarRelaciones(idUsuario, datos) {
-  const cuenta = await transaccionesRepositorio.buscarCuenta(idUsuario, datos.idCuenta);
+  const cuenta = await cuentasRepositorio.buscarCuenta(idUsuario, datos.idCuenta);
 
   if (!cuenta) {
     throw new ErrorApi('Cuenta no encontrada', 404);
   }
 
-  const categoria = await transaccionesRepositorio.buscarCategoria(idUsuario, datos.idCategoria);
+  const categoria = await categoriasRepositorio.buscarCategoria(idUsuario, datos.idCategoria);
 
   if (!categoria) {
     throw new ErrorApi('Categoria no encontrada', 404);

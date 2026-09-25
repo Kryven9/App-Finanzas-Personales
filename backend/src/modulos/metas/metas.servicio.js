@@ -1,4 +1,6 @@
 import { ErrorApi } from '../../compartido/middlewares/error.middleware.js';
+import { categoriasRepositorio } from '../categorias/categorias.repositorio.js';
+import { cuentasRepositorio } from '../cuentas/cuentas.repositorio.js';
 import { metasRepositorio } from './metas.repositorio.js';
 
 // convierte los montos Decimal a numero y aplana el nombre de la cuenta
@@ -77,13 +79,13 @@ export const metasServicio = {
       throw new ErrorApi('Meta no encontrada', 404);
     }
 
-    const cuenta = await metasRepositorio.buscarCuenta(idUsuario, idCuenta);
+    const cuenta = await cuentasRepositorio.buscarCuenta(idUsuario, idCuenta);
 
     if (!cuenta) {
       throw new ErrorApi('Cuenta no encontrada', 404);
     }
 
-    const categoria = await metasRepositorio.buscarCategoriaSistema();
+    const categoria = await categoriasRepositorio.buscarCategoriaSistema();
 
     if (!categoria) {
       throw new ErrorApi('La categoria de sistema para aportes no esta configurada', 500);
@@ -118,7 +120,7 @@ export const metasServicio = {
       throw new ErrorApi('Aporte no encontrado', 404);
     }
 
-    const cuenta = await metasRepositorio.buscarCuenta(idUsuario, datos.idCuenta);
+    const cuenta = await cuentasRepositorio.buscarCuenta(idUsuario, datos.idCuenta);
 
     if (!cuenta) {
       throw new ErrorApi('Cuenta no encontrada', 404);
