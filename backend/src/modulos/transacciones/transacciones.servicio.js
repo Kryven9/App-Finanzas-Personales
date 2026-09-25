@@ -11,7 +11,19 @@ function limpiarTransaccion(transaccion) {
     monto: Number(transaccion.monto),
     cuentaNombre: cuenta?.nombre ?? '',
     categoriaNombre: categoria?.nombre ?? '',
+    esAporteMeta: Boolean(transaccion.aporteMeta),
+    idMetaAporte: transaccion.aporteMeta?.idMeta ?? null,
   };
+}
+
+// las transacciones generadas por aportes de metas solo se administran desde el modulo de metas
+function validarTransaccionManual(transaccion) {
+  if (transaccion.aporteMeta) {
+    throw new ErrorApi(
+      'Esta transaccion fue generada por un aporte de meta y solo se puede modificar eliminando el aporte desde el modulo de metas',
+      403,
+    );
+  }
 }
 
 // validar que la cuenta y la categoria existan y que el tipo coincida con la categoria
@@ -78,6 +90,7 @@ export const transaccionesServicio = {
       throw new ErrorApi('Transaccion no encontrada', 404);
     }
 
+    await validarTransaccionManual(transaccion);
     // el tipo no es editable -> la nueva categoria debe coincidir con el tipo actual
     await validarRelaciones(idUsuario, { ...datos, tipo: transaccion.tipo });
     const actualizada = await transaccionesRepositorio.actualizar(id, datos);
@@ -91,6 +104,7 @@ export const transaccionesServicio = {
       throw new ErrorApi('Transaccion no encontrada', 404);
     }
 
+    await validarTransaccionManual(transaccion);
     await transaccionesRepositorio.eliminar(id);
   },
 };

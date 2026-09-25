@@ -24,6 +24,10 @@ export const categoriasServicio = {
       throw new ErrorApi('Categoria no encontrada', 404);
     }
 
+    if (categoria.esSistema) {
+      throw new ErrorApi('Las categorias de sistema no son editables', 403);
+    }
+
     if (categoria.esPredefinida) {
       throw new ErrorApi('Las categorias predefinidas no son editables', 403);
     }
@@ -53,6 +57,10 @@ export const categoriasServicio = {
 
     if (!categoria) {
       throw new ErrorApi('Categoria no encontrada', 404);
+    }
+
+    if (categoria.esSistema) {
+      throw new ErrorApi('Las categorias de sistema no son eliminables', 403);
     }
 
     if (categoria.esPredefinida) {
