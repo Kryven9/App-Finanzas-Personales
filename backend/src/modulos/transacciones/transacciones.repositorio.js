@@ -57,20 +57,6 @@ export const transaccionesRepositorio = {
     return transaccion;
   },
 
-  // solo cuentas propias pueden recibir transacciones
-  async buscarCuenta(idUsuario, id) {
-    const cuenta = await clientePrisma.cuenta.findFirst({ where: { id, idUsuario } });
-    return cuenta;
-  },
-
-  // categorias propias o predefinidas pueden asignarse a transacciones
-  async buscarCategoria(idUsuario, id) {
-    const categoria = await clientePrisma.categoria.findFirst({
-      where: { id, OR: [{ esPredefinida: true }, { idUsuario }] },
-    });
-    return categoria;
-  },
-
   async crear(idUsuario, datos) {
     const transaccion = await clientePrisma.transaccion.create({
       data: { ...datos, idUsuario },

@@ -28,17 +28,6 @@ export const metasRepositorio = {
     return meta;
   },
 
-  // solo cuentas propias pueden recibir aportes
-  async buscarCuenta(idUsuario, id) {
-    const cuenta = await clientePrisma.cuenta.findFirst({ where: { id, idUsuario } });
-    return cuenta;
-  },
-
-  async buscarCategoriaSistema() {
-    const categoria = await clientePrisma.categoria.findFirst({ where: { esSistema: true } });
-    return categoria;
-  },
-
   async buscarAporte(idAporte) {
     const aporte = await clientePrisma.aporteMeta.findUnique({
       where: { id: idAporte },

@@ -19,6 +19,12 @@ export const cuentasRepositorio = {
     return cuenta;
   },
 
+  // validar la cuenta de origen
+  async buscarCuenta(idUsuario, id) {
+    const cuenta = await clientePrisma.cuenta.findFirst({ where: { id, idUsuario } });
+    return cuenta;
+  },
+
   async crear(idUsuario, datos) {
     const cuenta = await clientePrisma.cuenta.create({ data: { ...datos, idUsuario } });
     return cuenta;
