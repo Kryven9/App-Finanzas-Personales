@@ -4,6 +4,7 @@ import { construirRango } from '../../compartido/utilidades/fechas.js';
 const INCLUIR_RELACIONES = {
   cuenta: { select: { nombre: true } },
   categoria: { select: { nombre: true } },
+  aporteMeta: { select: { idMeta: true } },
 };
 
 // construye el where a partir de los filtros del listado

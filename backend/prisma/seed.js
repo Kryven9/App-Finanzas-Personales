@@ -1,7 +1,6 @@
 import clientePrisma from '../src/compartido/config/cliente-prisma.js';
-import { categoriasRepositorio } from '../src/modulos/categorias/categorias.repositorio.js';
 
-// categorias predefinidas, visibles para todos los usuarios
+// categorias predefinidas del sistema, visibles para todos los usuarios
 const CATEGORIAS_PREDEFINIDAS = [
   { nombre: 'Vivienda', tipo: 'GASTO' },
   { nombre: 'Comida', tipo: 'GASTO' },
@@ -22,19 +21,34 @@ const CATEGORIAS_PREDEFINIDAS = [
   { nombre: 'Otros ingresos', tipo: 'INGRESO' },
 ];
 
-// idempotente -> solo crear las predefinidas si aun no existen
-async function main() {
-  const existentes = await clientePrisma.categoria.count({ where: { esPredefinida: true } });
+// categoria de sistema para los aportes de metas: interna, no seleccionable, editable ni eliminable
+const CATEGORIA_SISTEMA = { nombre: 'Ahorro / Meta', tipo: 'GASTO' };
 
-  if (existentes > 0) {
+// crea los registros iniciales de la base de datos (idempotente -> los existentes no se duplican)
+async function main() {
+  const hayPredefinidas = await clientePrisma.categoria.count({
+    where: { esPredefinida: true, esSistema: false },
+  });
+
+  if (hayPredefinidas > 0) {
     console.log('Las categorias predefinidas ya existen');
-    return;
+  } else {
+    await clientePrisma.categoria.createMany({
+      data: CATEGORIAS_PREDEFINIDAS.map((categoria) => ({ ...categoria, esPredefinida: true })),
+    });
+    console.log('Categorias predefinidas creadas');
   }
 
-  await clientePrisma.categoria.createMany({
-    data: CATEGORIAS_PREDEFINIDAS.map((categoria) => ({ ...categoria, esPredefinida: true })),
-  });
-  console.log('Categorias predefinidas creadas');
+  const haySistema = await clientePrisma.categoria.findFirst({ where: { esSistema: true } });
+
+  if (haySistema) {
+    console.log('La categoria de sistema ya existe');
+  } else {
+    await clientePrisma.categoria.create({
+      data: { ...CATEGORIA_SISTEMA, esPredefinida: true, esSistema: true },
+    });
+    console.log('Categoria de sistema creada: Ahorro / Meta');
+  }
 }
 
 main()

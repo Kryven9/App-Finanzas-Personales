@@ -85,7 +85,10 @@ export default function FormularioTransaccion({
     await onGuardar(datosParaEnviar);
   }
 
-  const categoriasPorTipo = categorias.filter((categoria) => categoria.tipo === valores.tipo);
+  // las categorias de sistema no son seleccionables en el formulario manual
+  const categoriasPorTipo = categorias.filter(
+    (categoria) => !categoria.esSistema && categoria.tipo === valores.tipo,
+  );
 
   return (
     <form onSubmit={manejarEnvio} noValidate className="flex flex-col gap-4">

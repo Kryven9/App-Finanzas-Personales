@@ -24,7 +24,12 @@ export default function TablaCategorias({ categorias, onEditar, onEliminar }) {
               >
                 <td className="px-4 py-3">
                   <span className="font-medium text-slate-900">{categoria.nombre}</span>
-                  {categoria.esPredefinida && (
+                  {categoria.esSistema && (
+                    <span className="ml-2 rounded-full bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-700">
+                      Sistema
+                    </span>
+                  )}
+                  {categoria.esPredefinida && !categoria.esSistema && (
                     <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500">
                       Predefinida
                     </span>
@@ -39,7 +44,7 @@ export default function TablaCategorias({ categorias, onEditar, onEliminar }) {
                   </span>
                 </td>
                 <td className="px-4 py-3 text-center">
-                  {categoria.esPredefinida ? (
+                  {categoria.esPredefinida || categoria.esSistema ? (
                     <span className="text-xs text-slate-400">-------</span>
                   ) : (
                     <div className="flex justify-center gap-1">

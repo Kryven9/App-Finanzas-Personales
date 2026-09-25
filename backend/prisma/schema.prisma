@@ -44,6 +44,7 @@ model Cuenta {
   usuario                  Usuario                 @relation(fields: [idUsuario], references: [id])
   transacciones            Transaccion[]
   transaccionesRecurrentes TransaccionRecurrente[]
+  aportesMeta              AporteMeta[]
 
   @@map("cuentas")
 }
@@ -59,12 +60,13 @@ model Categoria {
   nombre        String
   tipo          TipoCategoria
   esPredefinida Boolean       @default(false) @map("es_predefinida")
+  esSistema     Boolean       @default(false) @map("es_sistema")
   fechaCreacion DateTime      @default(now()) @map("fecha_creacion")
 
   usuario                  Usuario?                @relation(fields: [idUsuario], references: [id])
   transacciones            Transaccion[]
   transaccionesRecurrentes TransaccionRecurrente[]
-  presupuesto              Presupuesto[]
+  presupuestos             Presupuesto[]
 
   @@map("categorias")
 }
@@ -121,6 +123,7 @@ model Transaccion {
   cuenta                Cuenta                 @relation(fields: [idCuenta], references: [id], onDelete: Restrict)
   categoria             Categoria              @relation(fields: [idCategoria], references: [id], onDelete: Restrict)
   transaccionRecurrente TransaccionRecurrente? @relation(fields: [idTransaccionRecurrente], references: [id], onDelete: SetNull)
+  aporteMeta            AporteMeta?
 
   @@index([idUsuario, fecha])
   @@index([idCuenta])
@@ -164,11 +167,15 @@ model MetaAhorro {
 model AporteMeta {
   id            String   @id @default(uuid())
   idMeta        String   @map("id_meta")
+  idCuenta      String   @map("id_cuenta")
+  idTransaccion String   @unique @map("id_transaccion")
   monto         Decimal
   fecha         DateTime
   fechaCreacion DateTime @default(now()) @map("fecha_creacion")
 
-  meta MetaAhorro @relation(fields: [idMeta], references: [id], onDelete: Cascade)
+  meta        MetaAhorro  @relation(fields: [idMeta], references: [id], onDelete: Cascade)
+  cuenta      Cuenta      @relation(fields: [idCuenta], references: [id], onDelete: Restrict)
+  transaccion Transaccion @relation(fields: [idTransaccion], references: [id], onDelete: Restrict)
 
   @@map("aportes_meta")
 }

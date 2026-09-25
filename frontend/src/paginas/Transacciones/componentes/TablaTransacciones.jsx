@@ -1,9 +1,11 @@
-import { Pencil, Repeat, Trash2 } from 'lucide-react';
+import { PiggyBank, Pencil, Repeat, Target, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { obtenerTipoMovimiento } from '../../../compartido/tipos-movimiento';
 import { formatearMoneda } from '../../../compartido/formato';
 import { formatearFecha } from '../../../compartido/fechas';
 
 export default function TablaTransacciones({ transacciones, onEditar, onEliminar }) {
+  const navegar = useNavigate();
   return (
     <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
       <table className="min-w-full text-sm">
@@ -36,6 +38,12 @@ export default function TablaTransacciones({ transacciones, onEditar, onEliminar
                       Recurrente
                     </span>
                   )}
+                  {transaccion.esAporteMeta && (
+                    <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-700">
+                      <PiggyBank className="h-3 w-3" />
+                      Aporte meta
+                    </span>
+                  )}
                 </td>
                 <td className="max-w-55 truncate px-4 py-3 text-slate-600">
                   {transaccion.descripcion || '-------'}
@@ -60,20 +68,34 @@ export default function TablaTransacciones({ transacciones, onEditar, onEliminar
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex justify-center gap-1">
-                    <button
-                      onClick={() => onEditar(transaccion)}
-                      className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-violet-50 hover:text-violet-700"
-                      aria-label={`Editar la transaccion del ${formatearFecha(transaccion.fecha)}`}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => onEliminar(transaccion)}
-                      className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600"
-                      aria-label={`Eliminar la transaccion del ${formatearFecha(transaccion.fecha)}`}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                    {transaccion.esAporteMeta ? (
+                      // las transacciones de aportes se administran desde el modulo de metas
+                      <button
+                        onClick={() => navegar(`/metas/${transaccion.idMetaAporte}`)}
+                        className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-400 transition-colors hover:bg-violet-50 hover:text-violet-700"
+                        aria-label="Ver la meta asociada a esta transaccion"
+                      >
+                        <Target className="h-4 w-4" />
+                        Ver meta
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => onEditar(transaccion)}
+                          className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-violet-50 hover:text-violet-700"
+                          aria-label={`Editar la transaccion del ${formatearFecha(transaccion.fecha)}`}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => onEliminar(transaccion)}
+                          className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                          aria-label={`Eliminar la transaccion del ${formatearFecha(transaccion.fecha)}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </>
+                    )}
                   </div>
                 </td>
               </tr>
