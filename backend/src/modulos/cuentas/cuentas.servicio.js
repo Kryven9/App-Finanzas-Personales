@@ -1,4 +1,5 @@
 import { ErrorApi } from '../../compartido/middlewares/error.middleware.js';
+import { recurrenciasServicio } from '../recurrencias/recurrencias.servicio.js';
 import { cuentasRepositorio } from './cuentas.repositorio.js';
 
 const redondearMonto = (monto) => Math.round(monto * 100) / 100;
@@ -36,6 +37,9 @@ function agregarSaldos(cuentas, resumen) {
 
 export const cuentasServicio = {
   async listar(idUsuario) {
+    // primero generar los ciclos pendientes de las reglas recurrentes
+    await recurrenciasServicio.generarPendientes(idUsuario);
+
     const [cuentas, resumen] = await Promise.all([
       cuentasRepositorio.listar(idUsuario),
       cuentasRepositorio.resumirTransacciones(idUsuario),
@@ -89,9 +93,9 @@ export const cuentasServicio = {
       throw new ErrorApi('Cuenta no encontrada', 404);
     }
 
-    if (cuenta._count.transacciones > 0) {
+    if (cuenta._count.transacciones > 0 || cuenta._count.transaccionesRecurrentes > 0) {
       throw new ErrorApi(
-        'No se puede eliminar la cuenta porque tiene transacciones asociadas. Elimina o reasigna esas transacciones primero.',
+        'No se puede eliminar la cuenta porque tiene transacciones o reglas recurrentes asociadas. Elimina o reasigna esos registros primero.',
         409,
       );
     }

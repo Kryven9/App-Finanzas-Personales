@@ -5,6 +5,7 @@ import { categoriasRutas } from '../modulos/categorias/categorias.rutas.js';
 import { transaccionesRutas } from '../modulos/transacciones/transacciones.rutas.js';
 import { presupuestosRutas } from '../modulos/presupuestos/presupuestos.rutas.js';
 import { metasRutas } from '../modulos/metas/metas.rutas.js';
+import { recurrenciasRutas } from '../modulos/recurrencias/recurrencias.rutas.js';
 
 export const router = Router();
 
@@ -14,3 +15,4 @@ router.use('/categorias', categoriasRutas);
 router.use('/transacciones', transaccionesRutas);
 router.use('/presupuestos', presupuestosRutas);
 router.use('/metas', metasRutas);
+router.use('/recurrencias', recurrenciasRutas);

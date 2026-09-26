@@ -5,7 +5,7 @@ export const cuentasRepositorio = {
     const cuentas = await clientePrisma.cuenta.findMany({
       where: { idUsuario },
       orderBy: { fechaCreacion: 'asc' },
-      include: { _count: { select: { transacciones: true } } },
+      include: { _count: { select: { transacciones: true, transaccionesRecurrentes: true } } },
     });
     return cuentas;
   },
@@ -14,7 +14,7 @@ export const cuentasRepositorio = {
   async buscarPorId(idUsuario, id) {
     const cuenta = await clientePrisma.cuenta.findFirst({
       where: { id, idUsuario },
-      include: { _count: { select: { transacciones: true } } },
+      include: { _count: { select: { transacciones: true, transaccionesRecurrentes: true } } },
     });
     return cuenta;
   },
