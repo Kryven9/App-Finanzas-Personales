@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   PiggyBank,
   Receipt,
+  Repeat,
   Shapes,
   Target,
 } from 'lucide-react';
@@ -24,6 +25,11 @@ const enlaces = [
     ruta: '/transacciones',
     etiqueta: 'Transacciones',
     icono: <Receipt className="h-4 w-4 shrink-0" />,
+  },
+  {
+    ruta: '/recurrencias',
+    etiqueta: 'Recurrentes',
+    icono: <Repeat className="h-4 w-4 shrink-0" />,
   },
   {
     ruta: '/categorias',
