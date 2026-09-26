@@ -75,7 +75,7 @@ export const categoriasServicio = {
 
     if (usos.total > 0) {
       throw new ErrorApi(
-        'No se puede eliminar la categoria porque tiene transacciones o presupuestos asociados. Elimina o reasigna esos registros primero.',
+        'No se puede eliminar la categoria porque tiene transacciones, presupuestos o reglas recurrentes asociadas. Elimina o reasigna esos registros primero.',
         409,
       );
     }

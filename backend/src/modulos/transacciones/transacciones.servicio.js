@@ -1,6 +1,6 @@
 import { ErrorApi } from '../../compartido/middlewares/error.middleware.js';
-import { categoriasRepositorio } from '../categorias/categorias.repositorio.js';
-import { cuentasRepositorio } from '../cuentas/cuentas.repositorio.js';
+import { validarRelacionesTransaccion } from '../../compartido/servicios/validar-relaciones.js';
+import { recurrenciasServicio } from '../recurrencias/recurrencias.servicio.js';
 import { transaccionesRepositorio } from './transacciones.repositorio.js';
 
 const LIMITE_PAGINA = 10;
@@ -28,30 +28,11 @@ function validarTransaccionManual(transaccion) {
   }
 }
 
-// validar que la cuenta y la categoria existan y que el tipo coincida con la categoria
-async function validarRelaciones(idUsuario, datos) {
-  const cuenta = await cuentasRepositorio.buscarCuenta(idUsuario, datos.idCuenta);
-
-  if (!cuenta) {
-    throw new ErrorApi('Cuenta no encontrada', 404);
-  }
-
-  const categoria = await categoriasRepositorio.buscarCategoria(idUsuario, datos.idCategoria);
-
-  if (!categoria) {
-    throw new ErrorApi('Categoria no encontrada', 404);
-  }
-
-  if (categoria.tipo !== datos.tipo) {
-    throw new ErrorApi(
-      `La categoria "${categoria.nombre}" es de tipo ${categoria.tipo === 'INGRESO' ? 'ingreso' : 'gasto'} y no corresponde a una transaccion de tipo ${datos.tipo === 'INGRESO' ? 'ingreso' : 'gasto'}`,
-      422,
-    );
-  }
-}
-
 export const transaccionesServicio = {
   async listar(idUsuario, filtros) {
+    // antes de responder se generan los ciclos pendientes de las reglas recurrentes
+    await recurrenciasServicio.generarPendientes(idUsuario);
+
     const { transacciones } = await transaccionesRepositorio.listar(
       idUsuario,
       filtros,
@@ -80,7 +61,7 @@ export const transaccionesServicio = {
   },
 
   async crear(idUsuario, datos) {
-    await validarRelaciones(idUsuario, datos);
+    await validarRelacionesTransaccion(idUsuario, datos);
     const transaccion = await transaccionesRepositorio.crear(idUsuario, datos);
     return limpiarTransaccion(transaccion);
   },
@@ -94,7 +75,7 @@ export const transaccionesServicio = {
 
     await validarTransaccionManual(transaccion);
     // el tipo no es editable -> la nueva categoria debe coincidir con el tipo actual
-    await validarRelaciones(idUsuario, { ...datos, tipo: transaccion.tipo });
+    await validarRelacionesTransaccion(idUsuario, { ...datos, tipo: transaccion.tipo });
     const actualizada = await transaccionesRepositorio.actualizar(id, datos);
     return limpiarTransaccion(actualizada);
   },
