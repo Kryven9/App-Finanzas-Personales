@@ -5,6 +5,7 @@ import Modal from '../../componentes/comunes/Modal';
 import ListadoRecurrencias from './componentes/ListadoRecurrencias';
 import FormularioRecurrencia from './componentes/FormularioRecurrencia';
 import ModalEliminarRecurrencia from './componentes/ModalEliminarRecurrencia';
+import FiltroEstado from './componentes/FiltroEstado';
 import { useRecurrencias } from '../../hooks/useRecurrencias';
 import { useCuentasStore } from '../../estados/cuentas.store';
 import { useCategoriasStore } from '../../estados/categorias.store';
@@ -16,6 +17,7 @@ export default function Recurrencias() {
   const [modalAbierto, setModalAbierto] = useState(false);
   const [reglaEditando, setReglaEditando] = useState(null);
   const [reglaAEliminar, setReglaAEliminar] = useState(null);
+  const [filtroEstado, setFiltroEstado] = useState('todas');
   const [procesando, setProcesando] = useState(false);
 
   useEffect(() => {
@@ -73,9 +75,19 @@ export default function Recurrencias() {
         </Boton>
       </div>
 
+      {!cargando && recurrencias.length > 0 && (
+        <FiltroEstado
+          recurrencias={recurrencias}
+          valor={filtroEstado}
+          onCambiar={setFiltroEstado}
+        />
+      )}
+
       <ListadoRecurrencias
         cargando={cargando}
         recurrencias={recurrencias}
+        filtro={filtroEstado}
+        onLimpiarFiltro={() => setFiltroEstado('todas')}
         onNueva={abrirModalNueva}
         onEditar={abrirModalEdicion}
         onCambiarEstado={manejarCambiarEstado}
