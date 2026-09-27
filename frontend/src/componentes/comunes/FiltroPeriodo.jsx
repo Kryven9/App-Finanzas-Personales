@@ -1,13 +1,8 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import Select from '../../../componentes/comunes/Select';
-import { MESES, aniosDisponibles, obtenerNombreMes } from '../../../compartido/fechas';
+import SelectorPeriodo from './SelectorPeriodo';
+import { obtenerNombreMes } from '../../compartido/fechas';
 
 export default function FiltroPeriodo({ periodo, onCambiar }) {
-  function manejarCambio(evento) {
-    // los valores del select llegan como texto -> se convierten a numero
-    onCambiar({ ...periodo, [evento.target.name]: Number(evento.target.value) });
-  }
-
   // avanza o retrocede un mes, cruzando el cambio de año al pasar de diciembre a enero
   function cambiarMes(diferencia) {
     let mes = periodo.mes + diferencia;
@@ -48,25 +43,7 @@ export default function FiltroPeriodo({ periodo, onCambiar }) {
         </button>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Select
-          etiqueta="Mes"
-          id="mes"
-          name="mes"
-          opciones={MESES}
-          value={periodo.mes}
-          onChange={manejarCambio}
-        />
-
-        <Select
-          etiqueta="Año"
-          id="anio"
-          name="anio"
-          opciones={aniosDisponibles()}
-          value={periodo.anio}
-          onChange={manejarCambio}
-        />
-      </div>
+      <SelectorPeriodo id="periodo" periodo={periodo} onCambiar={onCambiar} />
     </div>
   );
 }
