@@ -6,7 +6,9 @@ import { transaccionesRutas } from '../modulos/transacciones/transacciones.rutas
 import { presupuestosRutas } from '../modulos/presupuestos/presupuestos.rutas.js';
 import { metasRutas } from '../modulos/metas/metas.rutas.js';
 import { recurrenciasRutas } from '../modulos/recurrencias/recurrencias.rutas.js';
+import { reportesRutas } from '../modulos/reportes/reportes.rutas.js';
 
+// centralizar todas las rutas de cada modulo
 export const router = Router();
 
 router.use('/autenticacion', autenticacionRutas);
@@ -16,3 +18,4 @@ router.use('/transacciones', transaccionesRutas);
 router.use('/presupuestos', presupuestosRutas);
 router.use('/metas', metasRutas);
 router.use('/recurrencias', recurrenciasRutas);
+router.use('/reportes', reportesRutas);

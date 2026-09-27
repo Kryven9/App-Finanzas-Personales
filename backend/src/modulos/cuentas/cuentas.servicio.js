@@ -1,8 +1,7 @@
 import { ErrorApi } from '../../compartido/middlewares/error.middleware.js';
+import { redondearMonto } from '../../compartido/utilidades/montos.js';
 import { recurrenciasServicio } from '../recurrencias/recurrencias.servicio.js';
 import { cuentasRepositorio } from './cuentas.repositorio.js';
-
-const redondearMonto = (monto) => Math.round(monto * 100) / 100;
 
 // agrupa ingresos y gastos por cuenta y calcula el saldo actual -> saldoInicial +
 // ingresos - gastos de sus transacciones
