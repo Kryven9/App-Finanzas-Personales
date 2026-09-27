@@ -4,7 +4,7 @@ import Boton from '../../componentes/comunes/Boton';
 import Tarjeta from '../../componentes/comunes/Tarjeta';
 import Modal from '../../componentes/comunes/Modal';
 import DialogoConfirmacion from '../../componentes/comunes/DialogoConfirmacion';
-import FiltroPeriodo from './componentes/FiltroPeriodo';
+import FiltroPeriodo from '../../componentes/comunes/FiltroPeriodo';
 import ListadoPresupuestos from './componentes/ListadoPresupuestos';
 import FormularioPresupuesto from './componentes/FormularioPresupuesto';
 import { usePresupuestos } from '../../hooks/usePresupuestos';

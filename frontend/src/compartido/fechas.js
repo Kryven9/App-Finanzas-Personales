@@ -39,8 +39,40 @@ export function aniosDisponibles() {
   });
 }
 
+// periodo {mes, anio} a partir de una fecha texto YYYY-MM-DD
+export function periodoDeFecha(fecha) {
+  const [anio, mes] = fecha.slice(0, 10).split('-');
+  return { mes: Number(mes), anio: Number(anio) };
+}
+
 // periodo actual a partir de la fecha de hoy
 export function periodoActual() {
   const hoy = fechaHoy();
-  return { mes: Number(hoy.slice(5, 7)), anio: Number(hoy.slice(0, 4)) };
+  return periodoDeFecha(hoy);
+}
+
+// rango de fechas de los reportes -> 'cantidad' meses completos incluyendo el actual
+export function rangoUltimosMeses(cantidad) {
+  const hoy = new Date();
+  const inicio = new Date(Date.UTC(hoy.getUTCFullYear(), hoy.getUTCMonth() - (cantidad - 1), 1));
+  const fin = new Date(Date.UTC(hoy.getUTCFullYear(), hoy.getUTCMonth() + 1, 0));
+
+  return { desde: inicio.toISOString().slice(0, 10), hasta: fin.toISOString().slice(0, 10) };
+}
+
+// etiqueta corta de un mes para los ejes de los graficos -> "Sep 25", "Ago 26"
+export function etiquetaPeriodo(anio, mes) {
+  return `${obtenerNombreMes(mes).slice(0, 3)} ${String(anio).slice(2)}`;
+}
+
+// rango completo entre dos meses -> del dia 1 al ultimo dia del mes final
+export function rangoEntreMeses(desde, hasta) {
+  const inicio = new Date(Date.UTC(desde.anio, desde.mes - 1, 1));
+  // el dia 0 del mes siguiente es el ultimo dia del mes pedido
+  const fin = new Date(Date.UTC(hasta.anio, hasta.mes, 0));
+
+  return {
+    desde: inicio.toISOString().slice(0, 10),
+    hasta: fin.toISOString().slice(0, 10),
+  };
 }

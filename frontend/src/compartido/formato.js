@@ -7,3 +7,14 @@ const formatoMoneda = new Intl.NumberFormat('es', {
 export function formatearMoneda(monto) {
   return `$${formatoMoneda.format(monto)}`;
 }
+
+const formatoMonedaCorta = new Intl.NumberFormat('es', {
+  notation: 'compact',
+  maximumFractionDigits: 1,
+});
+
+// monto abreviado para los ejes de los graficos -> $1.2 mil, $3.4 M
+export function formatearMonedaCorta(monto) {
+  const signo = monto < 0 ? '-' : '';
+  return `${signo}$${formatoMonedaCorta.format(Math.abs(monto))}`;
+}
