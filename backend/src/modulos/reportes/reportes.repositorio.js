@@ -12,7 +12,7 @@ export const reportesRepositorio = {
       select: {
         monto: true,
         idCategoria: true,
-        categoria: { select: { nombre: true } },
+        categoria: { select: { nombre: true, esPredefinida: true } },
       },
     });
     return gastos;

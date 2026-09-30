@@ -8,7 +8,7 @@ import FormularioMeta from './componentes/FormularioMeta';
 import FormularioAporte from './componentes/FormularioAporte';
 import { useMetasStore } from '../../estados/metas.store';
 import { useCuentasStore } from '../../estados/cuentas.store';
-import { formatearMoneda } from '../../compartido/formato';
+import { formatearMoneda, porcentaje } from '../../compartido/formato';
 
 export default function Metas() {
   const metas = useMetasStore((estado) => estado.metas);
@@ -29,8 +29,7 @@ export default function Metas() {
 
   const totalAhorrado = metas.reduce((total, meta) => total + meta.montoActual, 0);
   const totalObjetivo = metas.reduce((total, meta) => total + meta.montoObjetivo, 0);
-  const porcentajeAhorrado =
-    totalObjetivo > 0 ? Math.round((totalAhorrado / totalObjetivo) * 100) : 0;
+  const porcentajeAhorrado = porcentaje(totalAhorrado, totalObjetivo);
 
   function abrirModalNueva() {
     setModalAbierto(true);

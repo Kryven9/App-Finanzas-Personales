@@ -1,6 +1,7 @@
 import { Target } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Boton from '../../../componentes/comunes/Boton';
+import BarraProgreso from '../../../componentes/comunes/BarraProgreso';
 import { formatearMoneda } from '../../../compartido/formato';
 import { obtenerNombreMes } from '../../../compartido/fechas';
 import { calcularProgresoMeta } from '../../../compartido/progreso-meta';
@@ -35,9 +36,7 @@ export default function TarjetaMeta({ meta, onAportar }) {
         </span>
       </p>
 
-      <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
-        <div className={`h-full rounded-full ${clasesBarra}`} style={{ width: `${porcentaje}%` }} />
-      </div>
+      <BarraProgreso porcentaje={porcentaje} clases={clasesBarra} />
       <p className="mt-1 text-right text-xs font-semibold text-slate-600">{porcentaje}%</p>
 
       <p className="mt-2 text-xs text-slate-500">

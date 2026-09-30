@@ -38,6 +38,7 @@ export const reportesServicio = {
       const acumulado = porCategoria.get(gasto.idCategoria) ?? {
         idCategoria: gasto.idCategoria,
         categoriaNombre: gasto.categoria.nombre,
+        esPredefinida: gasto.categoria.esPredefinida,
         total: 0,
       };
 

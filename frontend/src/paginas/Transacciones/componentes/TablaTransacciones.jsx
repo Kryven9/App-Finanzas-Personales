@@ -4,10 +4,23 @@ import { obtenerTipoMovimiento } from '../../../compartido/tipos-movimiento';
 import { formatearMoneda } from '../../../compartido/formato';
 import { formatearFecha } from '../../../compartido/fechas';
 
-export default function TablaTransacciones({ transacciones, onEditar, onEliminar }) {
+// sin onEditar/onEliminar no se pinta la columna de acciones -> uso del dashboard;
+// conBorde=false deja la tabla sin marco cuando cuesta dentro de una Tarjeta
+export default function TablaTransacciones({
+  transacciones,
+  onEditar,
+  onEliminar,
+  conBorde = true,
+}) {
   const navegar = useNavigate();
+  const conAcciones = Boolean(onEditar || onEliminar);
+
   return (
-    <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+    <div
+      className={`overflow-x-auto ${
+        conBorde ? 'rounded-xl border border-slate-200 bg-white shadow-sm' : ''
+      }`}
+    >
       <table className="min-w-full text-sm">
         <thead>
           <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -17,7 +30,7 @@ export default function TablaTransacciones({ transacciones, onEditar, onEliminar
             <th className="px-4 py-3">Cuenta</th>
             <th className="px-4 py-3 text-center">Tipo</th>
             <th className="px-4 py-3 text-right">Monto</th>
-            <th className="px-4 py-3 text-center">Acciones</th>
+            {conAcciones && <th className="px-4 py-3 text-center">Acciones</th>}
           </tr>
         </thead>
         <tbody>
@@ -66,38 +79,40 @@ export default function TablaTransacciones({ transacciones, onEditar, onEliminar
                   {transaccion.tipo === 'INGRESO' ? '+' : '-'}
                   {formatearMoneda(transaccion.monto)}
                 </td>
-                <td className="px-4 py-3">
-                  <div className="flex justify-center gap-1">
-                    {transaccion.esAporteMeta ? (
-                      // las transacciones de aportes se administran desde el modulo de metas
-                      <button
-                        onClick={() => navegar(`/metas/${transaccion.idMetaAporte}`)}
-                        className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-400 transition-colors hover:bg-violet-50 hover:text-violet-700"
-                        aria-label="Ver la meta asociada a esta transaccion"
-                      >
-                        <Target className="h-4 w-4" />
-                        Ver meta
-                      </button>
-                    ) : (
-                      <>
+                {conAcciones && (
+                  <td className="px-4 py-3">
+                    <div className="flex justify-center gap-1">
+                      {transaccion.esAporteMeta ? (
+                        // las transacciones de aportes se administran desde el modulo de metas
                         <button
-                          onClick={() => onEditar(transaccion)}
-                          className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-violet-50 hover:text-violet-700"
-                          aria-label={`Editar la transaccion del ${formatearFecha(transaccion.fecha)}`}
+                          onClick={() => navegar(`/metas/${transaccion.idMetaAporte}`)}
+                          className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-400 transition-colors hover:bg-violet-50 hover:text-violet-700"
+                          aria-label="Ver la meta asociada a esta transaccion"
                         >
-                          <Pencil className="h-4 w-4" />
+                          <Target className="h-4 w-4" />
+                          Ver meta
                         </button>
-                        <button
-                          onClick={() => onEliminar(transaccion)}
-                          className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600"
-                          aria-label={`Eliminar la transaccion del ${formatearFecha(transaccion.fecha)}`}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </td>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => onEditar(transaccion)}
+                            className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-violet-50 hover:text-violet-700"
+                            aria-label={`Editar la transaccion del ${formatearFecha(transaccion.fecha)}`}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => onEliminar(transaccion)}
+                            className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                            aria-label={`Eliminar la transaccion del ${formatearFecha(transaccion.fecha)}`}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </td>
+                )}
               </tr>
             );
           })}

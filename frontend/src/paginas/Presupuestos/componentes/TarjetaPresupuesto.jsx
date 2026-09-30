@@ -1,25 +1,12 @@
 import { Pencil, Trash2 } from 'lucide-react';
+import BarraProgreso from '../../../componentes/comunes/BarraProgreso';
 import { formatearMoneda } from '../../../compartido/formato';
 import { obtenerNombreMes } from '../../../compartido/fechas';
 import { obtenerIconoCategoria } from '../../../compartido/iconos-categoria';
-
-// umbrales de advertencia del presupuesto -> verde < 80%, ambar 80-99%, rojo >= 100%
-const PORCENTAJE_ADVERTENCIA = 80;
-const PORCENTAJE_EXCEDIDO = 100;
+import { estadoPresupuesto } from '../../../compartido/presupuestos';
 
 export default function TarjetaPresupuesto({ presupuesto, onEditar, onEliminar }) {
-  const porcentajeExacto = (presupuesto.gastoReal / presupuesto.montoLimite) * 100;
-  const porcentaje = Math.round(porcentajeExacto);
-  const superado = porcentajeExacto >= PORCENTAJE_EXCEDIDO;
-  const enAdvertencia = !superado && porcentajeExacto >= PORCENTAJE_ADVERTENCIA;
-
-  // verde -> disponible, ambar -> cerca del limite, rojo -> superado
-  const clasesEstado = superado
-    ? 'text-red-600'
-    : enAdvertencia
-      ? 'text-amber-600'
-      : 'text-emerald-600';
-  const clasesBarra = superado ? 'bg-red-500' : enAdvertencia ? 'bg-amber-500' : 'bg-emerald-500';
+  const { porcentaje, clasesEstado, clasesBarra, etiqueta } = estadoPresupuesto(presupuesto);
 
   const { icono: Icono } = obtenerIconoCategoria(
     presupuesto.categoriaNombre,
@@ -72,17 +59,10 @@ export default function TarjetaPresupuesto({ presupuesto, onEditar, onEliminar }
         </div>
       </div>
 
-      <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
-        <div
-          className={`h-full rounded-full ${clasesBarra}`}
-          style={{ width: `${Math.min(100, porcentaje)}%` }}
-        />
-      </div>
+      <BarraProgreso porcentaje={porcentaje} clases={clasesBarra} className="mt-3" />
 
       <div className="mt-2 flex items-center justify-between">
-        <span className={`text-xs font-medium ${clasesEstado}`}>
-          {superado ? 'Presupuesto superado' : enAdvertencia ? 'Cerca del limite' : 'Disponible'}
-        </span>
+        <span className={`text-xs font-medium ${clasesEstado}`}>{etiqueta}</span>
         <span className="text-xs font-semibold text-slate-600">{porcentaje}%</span>
       </div>
     </div>

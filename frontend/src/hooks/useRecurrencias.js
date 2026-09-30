@@ -9,22 +9,24 @@ export function useRecurrencias() {
   const [recurrencias, setRecurrencias] = useState([]);
   const [cargando, setCargando] = useState(true);
 
-  const cargar = useCallback(() => {
-    recurrenciaServicio
-      .listar()
-      .then((datos) => {
-        setRecurrencias(datos);
-      })
-      .catch((error) => {
-        notificarError(obtenerMensajeError(error, 'No se pudieron cargar las reglas'));
-      })
-      .finally(() => {
-        setCargando(false);
-      });
+  const cargar = useCallback(async () => {
+    try {
+      const datos = await recurrenciaServicio.listar();
+      setRecurrencias(datos);
+    } catch (error) {
+      notificarError(obtenerMensajeError(error, 'No se pudieron cargar las reglas'));
+    } finally {
+      setCargando(false);
+    }
   }, []);
 
   useEffect(() => {
-    cargar();
+    // se delega en una funcion interna -> el efecto no debe ejecutar el estado directamente
+    async function cargarInicial() {
+      await cargar();
+    }
+
+    cargarInicial();
   }, [cargar]);
 
   async function crear(datos) {
