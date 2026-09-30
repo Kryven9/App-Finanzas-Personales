@@ -14,32 +14,29 @@ export function useTransacciones() {
   const cursores = useRef([null]);
   const filtros = useRef({});
 
-  const cargarPagina = useCallback((indicePagina) => {
+  const cargarPagina = useCallback(async (indicePagina) => {
     const despuesDe = cursores.current[indicePagina] ?? null;
 
-    transaccionServicio
-      .listar({ ...filtros.current, despuesDe })
-      .then((datos) => {
-        setTransacciones(datos.transacciones);
+    try {
+      const datos = await transaccionServicio.listar({ ...filtros.current, despuesDe });
+      setTransacciones(datos.transacciones);
 
-        if (datos.cursorSiguiente) {
-          cursores.current[indicePagina + 1] = datos.cursorSiguiente;
-        } else {
-          // sin pagina siguiente -> se descartan los cursores guardados mas adelante
-          cursores.current = cursores.current.slice(0, indicePagina + 1);
-        }
+      if (datos.cursorSiguiente) {
+        cursores.current[indicePagina + 1] = datos.cursorSiguiente;
+      } else {
+        // sin pagina siguiente -> se descartan los cursores guardados mas adelante
+        cursores.current = cursores.current.slice(0, indicePagina + 1);
+      }
 
-        setPaginacion({
-          pagina: indicePagina + 1,
-          haySiguiente: Boolean(datos.cursorSiguiente),
-        });
-      })
-      .catch((error) => {
-        notificarError(obtenerMensajeError(error, 'No se pudieron cargar las transacciones'));
-      })
-      .finally(() => {
-        setCargando(false);
+      setPaginacion({
+        pagina: indicePagina + 1,
+        haySiguiente: Boolean(datos.cursorSiguiente),
       });
+    } catch (error) {
+      notificarError(obtenerMensajeError(error, 'No se pudieron cargar las transacciones'));
+    } finally {
+      setCargando(false);
+    }
   }, []);
 
   // carga desde la primera pagina -> al montar, al aplicar filtros y al refrescar tras el CRUD

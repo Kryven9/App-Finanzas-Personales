@@ -14,10 +14,11 @@ import { CUADRICULA, EJE_MONEDA, EJE_TIEMPO, formatearTooltip } from './elemento
 const VERDE = '#2BCF83';
 const ROJO = '#E00D3C';
 
-// una barra por mes con el neto del periodo -> verde si es positivo, rojo si fue negativo
-export default function GraficoFlujoCaja({ datos }) {
+// una barra por mes con el neto del periodo -> verde si es positivo, rojo si fue negativo;
+// compacto reduce la altura para el bloque del dashboard
+export default function GraficoFlujoCaja({ datos, compacto = false }) {
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={compacto ? 200 : 300}>
       <BarChart data={datos} margin={{ top: 8, right: 16, bottom: 8, left: 8 }}>
         <CartesianGrid {...CUADRICULA} />
         <XAxis {...EJE_TIEMPO} />

@@ -15,6 +15,17 @@ const fechaOpcional = z.preprocess(
   esquemaFechaTexto.optional(),
 );
 
+// limite opcional de filas por pagina, sin parametro se usa el limite por defecto
+const limiteOpcional = z.preprocess(
+  (valor) => (valor === '' || valor == null ? undefined : valor),
+  z.coerce
+    .number('El limite debe ser un numero')
+    .int('El limite debe ser un numero entero')
+    .min(1, 'El limite debe estar entre 1 y 50')
+    .max(50, 'El limite debe estar entre 1 y 50')
+    .optional(),
+);
+
 const campoMonto = z
   .number('El monto es obligatorio')
   .positive('El monto debe ser mayor a 0')
@@ -53,6 +64,7 @@ export const esquemaFiltrosTransaccion = z
     idCategoria: z.preprocess((v) => (v === '' ? undefined : v), z.string().optional()),
     montoMin: numeroOpcional,
     montoMax: numeroOpcional,
+    limite: limiteOpcional,
     // cursor de paginacion -> id de la ultima transaccion de la pagina anterior
     despuesDe: z.preprocess(
       (v) => (v === '' ? undefined : v),

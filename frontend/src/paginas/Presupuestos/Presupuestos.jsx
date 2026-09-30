@@ -7,14 +7,15 @@ import DialogoConfirmacion from '../../componentes/comunes/DialogoConfirmacion';
 import FiltroPeriodo from '../../componentes/comunes/FiltroPeriodo';
 import ListadoPresupuestos from './componentes/ListadoPresupuestos';
 import FormularioPresupuesto from './componentes/FormularioPresupuesto';
-import { usePresupuestos } from '../../hooks/usePresupuestos';
+import { usePresupuestosStore } from '../../estados/presupuestos.store';
 import { useCategoriasStore } from '../../estados/categorias.store';
+import { totalesDe } from '../../compartido/presupuestos';
 import { formatearMoneda } from '../../compartido/formato';
-import { obtenerNombreMes } from '../../compartido/fechas';
+import { obtenerNombreMes, periodoActual } from '../../compartido/fechas';
 
 export default function Presupuestos() {
-  const { presupuestos, periodo, cargando, cambiarPeriodo, crear, actualizar, eliminar } =
-    usePresupuestos();
+  const { presupuestos, periodo, cargando, cargar, crear, actualizar, eliminar } =
+    usePresupuestosStore();
   const categorias = useCategoriasStore((estado) => estado.categorias);
   const cargarCategorias = useCategoriasStore((estado) => estado.cargar);
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -24,18 +25,14 @@ export default function Presupuestos() {
 
   useEffect(() => {
     cargarCategorias();
-  }, [cargarCategorias]);
+    cargar(periodoActual());
+  }, [cargarCategorias, cargar]);
 
-  const totalPresupuestado = presupuestos.reduce(
-    (total, presupuesto) => total + presupuesto.montoLimite,
-    0,
-  );
-  const totalGastoReal = presupuestos.reduce(
-    (total, presupuesto) => total + presupuesto.gastoReal,
-    0,
-  );
-  const porcentajeGastado =
-    totalPresupuestado > 0 ? Math.round((totalGastoReal / totalPresupuestado) * 100) : 0;
+  function cambiarPeriodo(nuevoPeriodo) {
+    cargar(nuevoPeriodo);
+  }
+
+  const { totalLimite, totalGastado, porcentaje } = totalesDe(presupuestos);
 
   function abrirModalNueva() {
     setPresupuestoEditando(null);
@@ -94,12 +91,10 @@ export default function Presupuestos() {
             </p>
             <p className="text-lg font-bold text-slate-900">
               <span className="font-medium text-slate-500">Presupuestado: </span>
-              {formatearMoneda(totalPresupuestado)}
+              {formatearMoneda(totalLimite)}
               <span className="ml-4 font-medium text-slate-500">Gastado: </span>
-              {formatearMoneda(totalGastoReal)}
-              <span className="ml-2 text-sm font-semibold text-slate-500">
-                ({porcentajeGastado}%)
-              </span>
+              {formatearMoneda(totalGastado)}
+              <span className="ml-2 text-sm font-semibold text-slate-500">({porcentaje}%)</span>
             </p>
           </div>
         </Tarjeta>

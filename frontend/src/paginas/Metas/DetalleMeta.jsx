@@ -2,6 +2,7 @@ import { Pencil, Plus, Target, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Boton from '../../componentes/comunes/Boton';
+import BarraProgreso from '../../componentes/comunes/BarraProgreso';
 import Tarjeta from '../../componentes/comunes/Tarjeta';
 import Modal from '../../componentes/comunes/Modal';
 import DialogoConfirmacion from '../../componentes/comunes/DialogoConfirmacion';
@@ -138,12 +139,7 @@ export default function DetalleMeta() {
           % · Meta: {obtenerNombreMes(Number(meta.fechaObjetivo.slice(5, 7)))}{' '}
           {meta.fechaObjetivo.slice(0, 4)}
         </p>
-        <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
-          <div
-            className={`h-full rounded-full ${clasesBarra}`}
-            style={{ width: `${porcentaje}%` }}
-          />
-        </div>
+        <BarraProgreso porcentaje={porcentaje} clases={clasesBarra} />
       </div>
 
       <div className="mb-6 flex flex-wrap gap-2">

@@ -3,7 +3,7 @@ import { validarRelacionesTransaccion } from '../../compartido/servicios/validar
 import { recurrenciasServicio } from '../recurrencias/recurrencias.servicio.js';
 import { transaccionesRepositorio } from './transacciones.repositorio.js';
 
-const LIMITE_PAGINA = 10;
+const LIMITE_PAGINA = 30;
 
 // convierte montos Decimal a numero y aplana los nombres de las relaciones
 function limpiarTransaccion(transaccion) {
@@ -33,16 +33,19 @@ export const transaccionesServicio = {
     // antes de responder se generan los ciclos pendientes de las reglas recurrentes
     await recurrenciasServicio.generarPendientes(idUsuario);
 
+    // el limite para dashboard -> N transacciones
+    const limite = filtros.limite ?? LIMITE_PAGINA;
+
     const { transacciones } = await transaccionesRepositorio.listar(
       idUsuario,
       filtros,
       filtros.despuesDe,
-      LIMITE_PAGINA,
+      limite,
     );
 
     // si vino una transaccion de mas, hay pagina siguiente -> el cursor es el id de la ultima visible
-    const haySiguiente = transacciones.length > LIMITE_PAGINA;
-    const pagina = transacciones.slice(0, LIMITE_PAGINA);
+    const haySiguiente = transacciones.length > limite;
+    const pagina = transacciones.slice(0, limite);
 
     return {
       transacciones: pagina.map(limpiarTransaccion),
